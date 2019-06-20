@@ -154,8 +154,10 @@ name_font = ImageFont.load_default()
 
 display_table_flag = 1
 
-potAct = 0
-timedPotAct = 0
+act = 0
+timedAct = 0
+actPage = 0
+
 
 #____________________VALUES & CV____________________#
 
@@ -179,10 +181,7 @@ rec2_pos = [44, 20, 50, 25]
 rec3_pos = [73, 38, 79, 43]
 rec4_pos = [102, 20, 108, 25]
 
-rec1_fill = 0
-rec2_fill = 0
-rec3_fill = 0
-rec4_fill = 0
+rec_fill = [0]*4
 
 
 #____________________UTILITIES____________________#
@@ -196,7 +195,7 @@ send_address = '127.0.0.1', 9001
 
 activePage = 0
 
-numberOfPages = 0
+numberOfPages = 1
 
 table = []
 

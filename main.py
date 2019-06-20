@@ -87,10 +87,10 @@ def display_inputs1():
 	cfg.draw.chord(cfg.pot4_pos, 0, 405, outline=255, fill=0)
 	cfg.draw.pieslice(cfg.pot4_pos, pot_angle[3], pot_angle[3], outline=255,fill=255)
 
-	cfg.draw.rectangle(cfg.rec1_pos, outline=255, fill=cfg.rec1_fill)
-	cfg.draw.rectangle(cfg.rec2_pos, outline=255, fill=cfg.rec2_fill)
-	cfg.draw.rectangle(cfg.rec3_pos, outline=255, fill=cfg.rec3_fill)
-	cfg.draw.rectangle(cfg.rec4_pos, outline=255, fill=cfg.rec4_fill)
+	cfg.draw.rectangle(cfg.rec1_pos, outline=255, fill=cfg.rec_fill[0])
+	cfg.draw.rectangle(cfg.rec2_pos, outline=255, fill=cfg.rec_fill[1])
+	cfg.draw.rectangle(cfg.rec3_pos, outline=255, fill=cfg.rec_fill[2])
+	cfg.draw.rectangle(cfg.rec4_pos, outline=255, fill=cfg.rec_fill[3])
 
 	cfg.draw.text((100,4),str(cfg.activePage+1)+'/'+str(cfg.numberOfPages), font=cfg.small_number_font, fill=1)
 	cfg.disp.image(cfg.image)
@@ -129,6 +129,17 @@ def display_input2():
 	except:
 		pass
 
+
+	
+def display_page():
+	cfg.disp.clear()
+	cfg.draw.rectangle((0,0,cfg.width,cfg.height),outline=0,fill=0)
+	cfg.draw.line([4,22,124,22], fill=255)
+	cfg.draw.text((3,6),'page',font=cfg.font,fill=1)
+	cfg.draw.text((30,35),str(cfg.activePage+1)+'/'+str(cfg.numberOfPages),font=cfg.number_font,fill=1)
+	cfg.disp.image(cfg.image)
+	cfg.disp.display()
+
 	
 def display_table():
 	""" 
@@ -164,19 +175,19 @@ def display_cv_in():
 	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
 
 	cfg.draw2.rectangle((0,0,23,52), outline=255, fill=0)
-	cfg.draw2.rectangle((2,cfg.cv[0],21,52), outline=255, fill=255)
+	cfg.draw2.rectangle((2,52-cfg.cv[0]*0.52,21,52), outline=255, fill=255)
 
 	cfg.draw2.rectangle((26,0,49,52), outline=255, fill=0)
-	cfg.draw2.rectangle((28,cfg.cv[1],47,52), outline=255, fill=255)
+	cfg.draw2.rectangle((28,52-cfg.cv[1]*0.52,47,52), outline=255, fill=255)
 
 	cfg.draw2.rectangle((52,0,75,52), outline=255, fill=0)
-	cfg.draw2.rectangle((54,cfg.cv[2],73,52), outline=255, fill=255)
+	cfg.draw2.rectangle((54,52-cfg.cv[2]*0.52,73,52), outline=255, fill=255)
 
 	cfg.draw2.rectangle((78,0,101,52), outline=255, fill=0)
-	cfg.draw2.rectangle((80,cfg.cv[3],99,52), outline=255, fill=255)
+	cfg.draw2.rectangle((80,52-cfg.cv[3]*0.52,99,52), outline=255, fill=255)
 
 	cfg.draw2.rectangle((104,0,127,52), outline=255, fill=0)
-	cfg.draw2.rectangle((106,cfg.cv[4],125,52), outline=255, fill=255)
+	cfg.draw2.rectangle((106,52-cfg.cv[4]*0.52,125,52), outline=255, fill=255)
 
 	cfg.draw2.rectangle((0,56,61,63), outline=255, fill=0)
 	cfg.draw2.rectangle((2,58,59,61), outline=cfg.gate_1, fill=cfg.gate_1)
@@ -188,17 +199,6 @@ def display_cv_in():
 	cfg.disp2.image(cfg.image2)
 	cfg.disp2.display()
 	cfg.disp2.clear()
-
-
-def cursor_move(direction):
-	""" 
-	moves the cursor up, down or to initialisation
-	"""
-	if direction == "up":
-		cfg.menu_line = (cfg.menu_line - 1)%8
-
-	if direction == "down":
-		cfg.menu_line = (cfg.menu_line + 1)%8
 
 
 #______________________________ OSC FONCTIONS ______________________________#
@@ -223,13 +223,16 @@ def oscSendSwitch(switch,state):
 ################
 #
 def display_patchScreen1():
-	display_inputs1()
+	if cfg.actPage == 1:
+		display_page()
+	else:
+		display_inputs1()
 
 def display_patchScreen2():
-	if cfg.potAct == 1:
+	if cfg.act == 1:
 		display_input2()
-		cfg.potAct = 0
-	elif cfg.timedPotAct==0:
+		cfg.act = 0
+	elif cfg.timedAct==0:
 		try:
 			if cfg.display_mode[cfg.activePage]=='cv_in':
 				display_cv_in()
@@ -251,8 +254,8 @@ def display_patchScreen2():
 #
 def display_patchList1():
 	cfg.draw.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-	cfg.draw.rectangle((0,4+cfg.menu_line*16,6,8+cfg.menu_line*16), outline=0, fill=255)
-	cfg.draw.rectangle((121,4+cfg.menu_line*16,127,8+cfg.menu_line*16), outline=0, fill=1)
+	cfg.draw.rectangle((0,4+int(cfg.menu_line)*16,6,8+int(cfg.menu_line)*16), outline=0, fill=255)
+	cfg.draw.rectangle((121,4+int(cfg.menu_line)*16,127,8+int(cfg.menu_line)*16), outline=0, fill=1)
 	for j in range(4):
 		try:
 			cfg.draw.text((12, 2+16*j), cfg.patch_list[j], font=cfg.font, fill=255)
@@ -264,8 +267,8 @@ def display_patchList1():
 
 def display_patchList2():
 	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-	cfg.draw2.rectangle((0,4+(cfg.menu_line*16)-64,6,8+(cfg.menu_line*16)-64), outline=0, fill=255)
-	cfg.draw2.rectangle((121,4+(cfg.menu_line*16)-64,127,8+(cfg.menu_line*16)-64), outline=0, fill=1)
+	cfg.draw2.rectangle((0,4+(int(cfg.menu_line)*16)-64,6,8+(int(cfg.menu_line)*16)-64), outline=0, fill=255)
+	cfg.draw2.rectangle((121,4+(int(cfg.menu_line)*16)-64,127,8+(int(cfg.menu_line)*16)-64), outline=0, fill=1)
 	for j in range(4):
 		try:
 			cfg.draw2.text((12, 2+16*j), cfg.patch_list[j+4], font=cfg.font, fill=255)
@@ -285,57 +288,77 @@ def display_patchList2():
 def serial():
 	while True:
 		serialMsg = cfg.serialLoop()
-		if serialMsg[0] == 176:
-			if serialMsg[2] == 1:
-				if serialMsg[1] == 2:
-					try:
-						cfg.activePage = (cfg.activePage + 1)%cfg.numberOfPages
-					except:
-						print 'implementer le changement de page'
-
-				if serialMsg[1] == 1:
-					if cfg.changingPatch == 0:
-						os.system("pkill pd &")
-						cfg.activePage = 0
-						"""fermer le serveur osc ?"""
-						cfg.readPatchList()
-						cfg.changingPatch = 1
-					elif cfg.changingPatch == 1:
-						try:
-							os.system('pd -path /usr/lib/pd/extra/osc -nogui '+cfg.folderPath+cfg.patch_list[cfg.menu_line]+'/main.pd &')
-							cfg.read_config_file(cfg.folderPath+cfg.patch_list[cfg.menu_line]+"/conf.txt")
-							cfg.changingPatch = -1
-							display_loading_screen()
-							cfg.changingPatch = 0
-						except:
+		if serialMsg[0] == 191:
+			if serialMsg[1] < 9:
+		#switchs
+				if serialMsg[2]==1:
+					if serialMsg[1]>4:
+						cfg.rec_fill[serialMsg[1]-5] = (cfg.rec_fill[serialMsg[1]-5]+1)%2
+						oscSendSwitch(serialMsg[1]-5,cfg.rec_fill[serialMsg[1]-5])
+						cfg.act = 1
+						cfg.timedAct = 1
+					elif serialMsg[1]==1:
+						if cfg.changingPatch == 0:
+							cfg.activePage = (cfg.activePage + 1)%cfg.numberOfPages
+							cfg.actPage = 1
+					elif serialMsg[1]==2:
+						if cfg.changingPatch == 0:
+							os.system("pkill pd &")
+							cfg.activePage = 0
+							"""fermer le serveur osc ?"""
 							cfg.readPatchList()
-				if serialMsg[1] == 5:
-					cfg.rec1_fill = (cfg.rec1_fill+1)%2
-					oscSendSwitch(0,cfg.rec1_fill)
-				if serialMsg[1] == 6:
-					cfg.rec2_fill = (cfg.rec2_fill+1)%2
-					oscSendSwitch(1,cfg.rec2_fill)
-				if serialMsg[1] == 7:
-					cfg.rec3_fill = (cfg.rec3_fill+1)%2
-					oscSendSwitch(2,cfg.rec3_fill)
-				if serialMsg[1] == 8:
-					cfg.rec4_fill = (cfg.rec4_fill+1)%2
-					oscSendSwitch(3,cfg.rec4_fill)
-	
-		if serialMsg[0] > 127 and serialMsg[0] < 132:
-			if cfg.changingPatch == 1:
-				if serialMsg[1] == 1:
-					cursor_move('down')
-				if serialMsg[1] == 0:
-					cursor_move('up')
-			elif cfg.changingPatch == 0:
-				cfg.last_pot=serialMsg[0]-128
-				try:
-					cfg.encoder[serialMsg[0]-128+cfg.activePage*4].value = max(min(int(cfg.encoder[serialMsg[0]-128+cfg.activePage*4].value) - (serialMsg[1]*2-1),127),0)
-				except:
-					pass
-				cfg.potAct = 1
-				cfg.timedPotAct = 1
+							cfg.changingPatch = 1
+						elif cfg.changingPatch == 1:
+							try:
+								os.system('pd -path /usr/lib/pd/extra/osc -nogui -alsamidi -mididev 1 '+cfg.folderPath+cfg.patch_list[int(cfg.menu_line)]+'/main.pd &')
+								time.sleep(2)
+								os.system("aconnect 20:0 128:0")
+								cfg.read_config_file(cfg.folderPath+cfg.patch_list[int(cfg.menu_line)]+"/conf.txt")
+								cfg.changingPatch = -1
+								display_loading_screen()
+								cfg.changingPatch = 0
+							except:
+								cfg.readPatchList()
+				else:
+					if serialMsg[1]==1:
+						cfg.actPage=0
+
+			elif serialMsg[1] < 15:
+		#CVs
+				cfg.cv[serialMsg[1]-10] = serialMsg[2]
+
+			elif serialMsg[1] < 24:
+		#Encoders going up
+				if cfg.changingPatch == 1:
+					cfg.menu_line = (cfg.menu_line + serialMsg[2]*0.1)%8
+				elif cfg.changingPatch == 0:
+					cfg.last_pot=serialMsg[1]-20
+					try:
+						cfg.encoder[serialMsg[1]-20+cfg.activePage*4].value = max(min(cfg.encoder[serialMsg[1]-20+cfg.activePage*4].value - serialMsg[2]*0.5,127),0)
+					except:
+						pass
+					cfg.act = 1
+					cfg.timedAct = 1
+
+			elif serialMsg[1] < 28:
+		#Encoders going udown
+				if cfg.changingPatch == 1:
+					cfg.menu_line = (cfg.menu_line - serialMsg[2]*0.1)%8
+				elif cfg.changingPatch == 0:
+					cfg.last_pot=serialMsg[1]-24
+					try:
+						cfg.encoder[serialMsg[1]-24+cfg.activePage*4].value = max(min(cfg.encoder[serialMsg[1]-24+cfg.activePage*4].value + serialMsg[2]*0.5,127),0)
+					except:
+						pass
+					cfg.act = 1
+					cfg.timedAct = 1
+
+			else:
+		#Gates
+				if serialMsg[1] == 30:
+					cfg.gate_1 = serialMsg[2]
+				else:
+					cfg.gate_2 = serialMsg[2]
 
 serialThread = threading.Thread(target=serial)
 serialThread.start()
@@ -348,9 +371,9 @@ serialThread.start()
 
 def timer():
 	while  True:
-		if cfg.potAct==0:
+		if cfg.act==0:
 			time.sleep(1)
-			cfg.timedPotAct = 0
+			cfg.timedAct = 0
 
 timerThread = threading.Thread(target=timer)
 timerThread.start()
