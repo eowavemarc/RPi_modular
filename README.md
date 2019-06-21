@@ -35,7 +35,7 @@ utiliser l'utilitaire alsamixer pour ouvrir les entrées et sorties (hifi output
 	python-serial
 	python-psutil
 	usbmount</code><br/>
-  dans <b>/lib/systemd/system/systemd-udevd.service</b>, remplacer <code>MountFlags=slave</code> par  <code>MountFlags=shared</code>
+<code>sudo nano /lib/systemd/system/systemd-udevd.service</code> : remplacer <code>MountFlags=slave</code> par  <code>MountFlags=shared</code>
 	
 <code>sudo apt-get install --no-install-recommends python-pip</code><br/>
 <code>sudo pip install  Adafruit-SSD1306 Adafruit-GPIO</code><br/>
@@ -47,11 +47,11 @@ utiliser l'utilitaire alsamixer pour ouvrir les entrées et sorties (hifi output
 
 <br/><i>installation du programme principal :</i>
 
-<code>git clone https://github.com/eowavemarc/RPi-modular</code><br/>
-<code>cd RPi-modular</code><br/>
+<code>git clone https://github.com/eowavemarc/RPi_modular.git</code><br/>
+<code>cd RPi_modular</code><br/>
 <code>cp -r * ../</code><br/>
 <code>cd ../</code><br/>
 
-<code>sudo rm -r pyosc RPi-modular</code><br/>
+<code>sudo rm -r pyosc RPi_modular</code><br/>
 
-dans <b>/etc/rc.local</b>, ajouter <code>python /home/pi/main.py &</code> avant <code>exit 0</code>
+<code>sudo nano /etc/rc.local</code> : ajouter <code>python /home/pi/main.py &</code> avant <code>exit 0</code>
