@@ -250,7 +250,10 @@ def display_patchScreen2():
 		display_input2()
 		cfg.act = 0
 	elif cfg.actSwitch != -1:
-		display_activeSwitch(cfg.actSwitch)
+		try:
+			display_activeSwitch(cfg.actSwitch)
+		except:
+			pass
 	elif cfg.timedAct==0:
 		try:
 			if cfg.display_mode[cfg.activePage]=='cv_in':
@@ -318,10 +321,13 @@ def serial():
 		#switchs
 				if serialMsg[2]==1:
 					if serialMsg[1]>4:
-						cfg.rec_fill[serialMsg[1]-5] = (cfg.rec_fill[serialMsg[1]-5]+1)%2
-						oscSendSwitch(serialMsg[1]-5,cfg.switch[serialMsg[1]-5].state)
-						cfg.switch[serialMsg[1]-5].state = (cfg.switch[serialMsg[1]-5].state + 1)%cfg.switch[serialMsg[1]-5].numStates
-						cfg.actSwitch = serialMsg[1]-5
+						try:
+							cfg.rec_fill[serialMsg[1]-5] = (cfg.rec_fill[serialMsg[1]-5]+1)%2
+							cfg.actSwitch = serialMsg[1]-5
+							cfg.switch[serialMsg[1]-5].state = (cfg.switch[serialMsg[1]-5].state + 1)%cfg.switch[serialMsg[1]-5].numStates
+							oscSendSwitch(serialMsg[1]-5,cfg.switch[serialMsg[1]-5].state)
+						except:
+							pass
 					elif serialMsg[1]==1:
 						if cfg.changingPatch == 0:
 							cfg.activePage = (cfg.activePage + 1)%cfg.numberOfPages
@@ -335,7 +341,7 @@ def serial():
 							cfg.changingPatch = 1
 						elif cfg.changingPatch == 1:
 							try:
-								os.system('pd -path /usr/lib/pd/extra/osc /home/pi/puredata -nogui -alsamidi -mididev 1 '+cfg.folderPath+cfg.patch_list[int(cfg.menu_line)]+'/main.pd &')
+								os.system('pd -path /usr/lib/pd/extra/osc -path /home/pi/puredata -nogui -alsamidi -mididev 1 '+cfg.folderPath+cfg.patch_list[int(cfg.menu_line)]+'/main.pd &')
 								time.sleep(2)
 								os.system("aconnect 20:0 128:0")
 								cfg.read_config_file(cfg.folderPath+cfg.patch_list[int(cfg.menu_line)]+"/conf.txt")

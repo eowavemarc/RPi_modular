@@ -209,7 +209,7 @@ table = []
 def readPatchList():
 	global patch_list
 	patch_list = sorted(os.listdir(folderPath)) #list of atmnt folder in the previous folder
-	patch_list.append(os.listdir("/home/pi/puredata/exemples"))
+	patch_list += os.listdir("/home/pi/puredata/exemples")
 	i = 0
 	while(i<len(patch_list)):
 		if patch_list[i]!=patch_list[i].replace('.',''):
