@@ -11,3 +11,12 @@ les caractères <b>;</b> séparent les différents inputs d'une déclaration.<br
   dans le cas des switchs :<br/>
   <code>nom du switch , nom du premier état , nom de second état , etc.</code><br/>
 les différents éléments sont automatiquement répartient sur les différentes pages de l'affichage en respectant l'ordre décrit dans <b>conf.txt</b>. Pour plus de détail, voir les exemples.
+
+# affichages
+
+les différents modes d'affichage (<code>display_mode</code>) sont les suivant :<br/>
+<code>table</code> : affiche le tableau envoyé par l'objet oscSend~. La tableau doit contenir 128 valeurs comprisent entre -1 et 1.<br/>
+<code>cpu</code> : affiche le pourcentage d'utilisation du CPU.<br/>
+  <code>cv_in</code> : affiche les entrées CV et Gate.<br/>
+    <code>switchStates</code> : affiche les noms des états actuel des switchs présent sur la page.<br/>
+  
