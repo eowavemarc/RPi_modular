@@ -25,10 +25,15 @@ class Switch:
         self.name = name
         self.stateNames = stateNames
         self.numStates = len(self.stateNames)
+        self.state = 0
 switch = []
 
 def read_config_file(fichier):
     global display_mode, encoder, switch, display_value, numberOfPages
+
+    display_mode = []
+    encoder = []
+    switch = []
 
     for i in range(len(encoder)):
 	del encoder[0]
@@ -81,7 +86,7 @@ def read_config_file(fichier):
 			except:
 				pass
 
-	numberOfPages = max(len(display_mode),len(encoder)//4+1,len(switch)//4+1)
+	numberOfPages = max(len(display_mode),(len(encoder)-1)//4+1,(len(switch)-1)//4+1)
 
 
 #____________________SERIAL____________________#
@@ -157,7 +162,7 @@ display_table_flag = 1
 act = 0
 timedAct = 0
 actPage = 0
-
+actSwitch = -1
 
 #____________________VALUES & CV____________________#
 
@@ -204,6 +209,7 @@ table = []
 def readPatchList():
 	global patch_list
 	patch_list = sorted(os.listdir(folderPath)) #list of atmnt folder in the previous folder
+	patch_list.append(os.listdir("/home/pi/puredata/exemples"))
 	i = 0
 	while(i<len(patch_list)):
 		if patch_list[i]!=patch_list[i].replace('.',''):

@@ -73,8 +73,6 @@ def display_inputs1():
 		except:
 			pass
 
-	#_______________________________________________________________
-
 	cfg.disp.clear()
 	cfg.draw.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
 
@@ -129,7 +127,6 @@ def display_input2():
 	except:
 		pass
 
-
 	
 def display_page():
 	cfg.disp.clear()
@@ -154,7 +151,6 @@ def display_table():
 			pass
 	cfg.disp2.image(cfg.image2)
 	cfg.disp2.display()
-
 
 	
 def display_cpu():
@@ -195,12 +191,32 @@ def display_cv_in():
 	cfg.draw2.rectangle((66,56,127,63), outline=255, fill=0)
 	cfg.draw2.rectangle((68,58,125,61), outline=cfg.gate_2, fill=cfg.gate_2)
 
-
+	cfg.disp2.image(cfg.image2)
+	cfg.disp2.display()
+	cfg.disp2.clear()
+	
+	
+def display_activeSwitch(switch):
+	#display the value and name of a switch when it is pressed
+	cfg.draw2.rectangle((0,0,cfg.width,cfg.height),outline=0, fill=0)
+	cfg.draw2.line([4,22,124,22], fill=255)
+	cfg.draw2.text((3,6),cfg.switch[switch].name,font=cfg.font,fill=1)
+	cfg.draw2.text((10,35),cfg.switch[switch].stateNames[cfg.switch[switch].state],font=cfg.number_font,fill=1)
 	cfg.disp2.image(cfg.image2)
 	cfg.disp2.display()
 	cfg.disp2.clear()
 
-
+def display_allSwitchs():
+	#display the values of the 4 switch on the page
+	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
+	cfg.draw2.text((0,15), str(cfg.switch[0+4*cfg.activePage].stateNames[cfg.switch[0+4*cfg.activePage].state]), font=cfg.font, fill=255)
+	cfg.draw2.text((15,45), str(cfg.switch[1+4*cfg.activePage].stateNames[cfg.switch[1+4*cfg.activePage].state]), font=cfg.font, fill=255)
+	cfg.draw2.text((64,15), str(cfg.switch[2+4*cfg.activePage].stateNames[cfg.switch[2+4*cfg.activePage].state]), font=cfg.font, fill=255)
+	cfg.draw2.text((79,45), str(cfg.switch[3+4*cfg.activePage].stateNames[cfg.switch[3+4*cfg.activePage].state]), font=cfg.font, fill=255)
+	cfg.disp2.image(cfg.image2)
+	cfg.disp2.display()
+	cfg.disp2.clear()
+	
 #______________________________ OSC FONCTIONS ______________________________#
 
 def change_table(addr, tags, stuff, source):
@@ -217,6 +233,7 @@ client.sendto(OSC.OSCMessage("/echo", 1), app)
 def oscSendSwitch(switch,state):
 	try:
 		client.sendto(OSC.OSCMessage("/"+cfg.switch[switch+cfg.activePage*4].name,cfg.switch[switch+cfg.activePage*4].stateNames[state]), app)
+		cfg.switch[switch+cfg.activePage*4].state = state
 	except:
 		pass
 
@@ -232,6 +249,8 @@ def display_patchScreen2():
 	if cfg.act == 1:
 		display_input2()
 		cfg.act = 0
+	elif cfg.actSwitch != -1:
+		display_activeSwitch(cfg.actSwitch)
 	elif cfg.timedAct==0:
 		try:
 			if cfg.display_mode[cfg.activePage]=='cv_in':
@@ -246,6 +265,11 @@ def display_patchScreen2():
 		try:
 			if cfg.display_mode[cfg.activePage]=='table':
 				display_table()
+		except:
+			pass
+		try:
+			if cfg.display_mode[cfg.activePage]=='switchStates':
+				display_allSwitchs()
 		except:
 			pass
 
@@ -263,7 +287,8 @@ def display_patchList1():
 			pass
 	cfg.disp.image(cfg.image)
 	cfg.disp.display()
-	cfg.disp.clear()
+	cfg.disp.clear
+	
 
 def display_patchList2():
 	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
@@ -294,9 +319,9 @@ def serial():
 				if serialMsg[2]==1:
 					if serialMsg[1]>4:
 						cfg.rec_fill[serialMsg[1]-5] = (cfg.rec_fill[serialMsg[1]-5]+1)%2
-						oscSendSwitch(serialMsg[1]-5,cfg.rec_fill[serialMsg[1]-5])
-						cfg.act = 1
-						cfg.timedAct = 1
+						oscSendSwitch(serialMsg[1]-5,cfg.switch[serialMsg[1]-5].state)
+						cfg.switch[serialMsg[1]-5].state = (cfg.switch[serialMsg[1]-5].state + 1)%cfg.switch[serialMsg[1]-5].numStates
+						cfg.actSwitch = serialMsg[1]-5
 					elif serialMsg[1]==1:
 						if cfg.changingPatch == 0:
 							cfg.activePage = (cfg.activePage + 1)%cfg.numberOfPages
@@ -310,7 +335,7 @@ def serial():
 							cfg.changingPatch = 1
 						elif cfg.changingPatch == 1:
 							try:
-								os.system('pd -path /usr/lib/pd/extra/osc -nogui -alsamidi -mididev 1 '+cfg.folderPath+cfg.patch_list[int(cfg.menu_line)]+'/main.pd &')
+								os.system('pd -path /usr/lib/pd/extra/osc /home/pi/puredata -nogui -alsamidi -mididev 1 '+cfg.folderPath+cfg.patch_list[int(cfg.menu_line)]+'/main.pd &')
 								time.sleep(2)
 								os.system("aconnect 20:0 128:0")
 								cfg.read_config_file(cfg.folderPath+cfg.patch_list[int(cfg.menu_line)]+"/conf.txt")
@@ -322,6 +347,7 @@ def serial():
 				else:
 					if serialMsg[1]==1:
 						cfg.actPage=0
+					cfg.actSwitch=-1
 
 			elif serialMsg[1] < 15:
 		#CVs
@@ -359,6 +385,11 @@ def serial():
 					cfg.gate_1 = serialMsg[2]
 				else:
 					cfg.gate_2 = serialMsg[2]
+		else:
+			try:
+				client.sendto(OSC.OSCMessage("/midi", serialMsg), app)
+			except:
+				pass
 
 serialThread = threading.Thread(target=serial)
 serialThread.start()
