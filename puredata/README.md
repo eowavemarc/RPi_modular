@@ -4,7 +4,10 @@ Vous trouverez dans ce dossier des objets utiles pour adapter un patch Pd à la 
 # norme du fichier conf.txt
 le système ne tient pas compte des espaces, tabulations et sauts de lignes, vous pouvez donc mettre en page ce fichier comme bon vous semble.<br/>
 les caractères <b>=</b> séparent les déclarations et leur type. le fichier doit donc suivre la forme suivante :<br/>
-<code><type de la première déclaration> = <première déclaration> = <type de la seconde déclaration> = <seconde déclaration></code> et ainsi de suite<br/>
-les caractères <b>;</b> séparent les différents élements d'une déclaration.<br/>
-<code><type de déclaration> = <premier élement de la déclaration> ; <second élément></code> etc.<br/>
+<code>type d'input = liste d'input = autre type d'input = autre liste</code> et ainsi de suite<br/>
+les caractères <b>;</b> séparent les différents inputs d'une déclaration.<br/>
+<code>type d'input = premier input de ce type ; second input</code> etc.<br/>. 
+  Les caratères <b>,</b> séparent les différentes informations concernant un input. Dans le cas des encodeur :<br/><code> nom de la valeur , valeur minimum , valeur maximum , unité de mesure</code><br/>
+  dans le cas des switchs :<br/>
+  <code>nom du switch , nom du premier état , nom de second état , etc.</code><br/>
 les différents éléments sont automatiquement répartient sur les différentes pages de l'affichage en respectant l'ordre décrit dans <b>conf.txt</b>. Pour plus de détail, voir les exemples.
