@@ -1,0 +1,8 @@
+
+=display_mode=	cpu; cv_in; table
+
+=encoder=	range,0,300,Hz; 
+		delay,10,2000,ms
+
+=switch=	playPause,paused,playing;
+		portamento,smooth,harsh

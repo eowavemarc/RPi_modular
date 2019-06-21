@@ -1,0 +1,5 @@
+
+=display_mode=	table;cpu
+
+=encoder=	
+=switch=

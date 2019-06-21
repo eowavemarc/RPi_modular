@@ -1,0 +1,13 @@
+
+=display_mode=	table;cpu
+
+=encoder=	freq1,100,1000,Hz;
+		freq2,100,1000,Hz;
+		freq3,100,1000,Hz;
+		freq4,100,1000,Hz;
+		lfoDepth,0,1, ;
+		lfoRate,0,2, ;
+		pulseWidth,0,4, ;
+		hiCut,100,10000,Hz
+
+=switch=
