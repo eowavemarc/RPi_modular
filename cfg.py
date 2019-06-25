@@ -5,7 +5,7 @@ import os
 import serial
 import struct
 
-folderPath = "/media/usb/"
+folderPath = "/home/pi/puredata/exemples/"
 
 #____________________CONFIG____________________#
 
@@ -208,8 +208,9 @@ table = []
 
 def readPatchList():
 	global patch_list
-	patch_list = sorted(os.listdir(folderPath)) #list of atmnt folder in the previous folder
-	patch_list += os.listdir("/home/pi/puredata/exemples")
+	#patch_list = sorted(os.listdir(folderPath)) #list of atmnt folder in the previous folder
+	#patch_list += os.listdir("/home/pi/puredata/exemples")
+	patch_list = sorted(os.listdir(folderPath))
 	i = 0
 	while(i<len(patch_list)):
 		if patch_list[i]!=patch_list[i].replace('.',''):
