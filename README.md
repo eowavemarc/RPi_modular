@@ -11,7 +11,7 @@ Par defaut, le clavier est parametré en mode qwerty, pour modifier ça et param
 toujours dans l'utilitaire raspi-config, selectionner <b>interfacing options</b> --> <b>serial</b> --> <b>no</b> --> <b>yes</b><br/>
 puis <b>spi</b> --> <b>yes</b><br/>
 ainsi que <b>boot</b> --> <b>autologin</b><br/>
-
+connectez vous à internet depuis <b>networking options</b>.
 
 <br/><i>installation du driver audio :</i>
 
