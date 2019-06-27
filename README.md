@@ -8,7 +8,7 @@ https://www.raspberrypi.org/downloads/raspbian/
 les nom d'utilisateur et mots de passe par défauts sont respectivement : <b>pi</b> et <b>raspberry</b>.<br/>
 Par defaut, le clavier est parametré en mode qwerty, pour modifier ça et parametrer la connexion wifi, utiliser la commande <code>sudo raspi-config</code><br/>
 
-wifi : selectinner <b>networking options</:b> puis <b> wi-fi</b><br/>
+wifi : selectinner <b>networking options</b> puis <b> wi-fi</b><br/>
 clavier : <b>localisation options</b> puis <b>change keyboard layout</b>
 seriel : selectionner <b>interfacing options</b> puis <b>serial</b>, à la question "would you like a login shell to be accessible over serial?", répondre <b>no</b> et à la question "would you like the serial port hardware to be enabled?" répondre <b>yes</b><br/>
 spi :  <b>interfacing options</b>, <b>spi</b>, <b>yes</b><br/>
