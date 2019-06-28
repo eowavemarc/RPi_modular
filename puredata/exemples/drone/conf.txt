@@ -1,0 +1,17 @@
+
+=display_mode=	switchStates;cv_in
+
+=encoder=	freq1,100,1000,Hz;
+		freq2,100,1000,Hz;
+		freq3,100,1000,Hz;
+		freq4,100,1000,Hz;
+		lfoDepth,0,1, ;
+		lfoRate,0,2,Hz;
+		pulseWidth,0,1, ;
+		hiCut,100,10000,Hz
+
+=switch=	freq1.S,cv.off,cv.on;
+		freq2.S,cv.off,cv.on;
+		freq3.S,cv.off,cv.on;
+		freq4.S,cv.off,cv.on;
+		pulseWidth.S,cv.off,cv.on;

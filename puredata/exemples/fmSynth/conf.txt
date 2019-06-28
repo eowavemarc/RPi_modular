@@ -1,17 +1,17 @@
 
-=display_mode= table; cv_in; cpu
+=display_mode=  waveform;cv_in;cpu
 
 =encoder=	ratio1,1,5, ;
-		indice1,0,300, ;
+		indice1,0,200, ;
 		ratio2,1,5, ;
-		indice2,0,300, ;
+		indice2,0,200, ;
 		
 		attaque,10,1000,ms;
 		decay,10,1000,ms;
 		sustain,0,1, ;
 		release,10,1000,ms;
 
-		delays,1,100,ms;
+		delays,0.5,50,ms;
 		niveau,0,1, ;
 		
-=switch=
+=switch=	cv,off,on;

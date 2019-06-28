@@ -5,7 +5,46 @@ import os
 import serial
 import struct
 
-folderPath = "/home/pi/puredata/exemples/"
+
+#________________________CONSTANTES______________________________#
+
+
+device = 1 #0 pour la carte sd et 1 pour la clef usb
+
+usbPath = "/media/usb/"
+sdPath = "/home/pi/puredata/exemples/"
+
+font_folder = "/home/pi/font/"
+
+font = ImageFont.truetype(font_folder+"GeosansLight.ttf",18)
+number_font = ImageFont.truetype(font_folder+"Laffayette_Comic_Pro.ttf", 32)
+name_font = ImageFont.load_default()
+
+fontOffset = -2 #le changement de police necessite parfois un decalage vertical
+
+receive_address = '127.0.0.1', 9998
+send_address = '127.0.0.1', 9001
+
+
+
+#____________________SYSTEM____________________#
+
+def readPatchList():
+	global patch_list_usb, patch_list_sd
+	patch_list_usb = sorted(os.listdir(usbPath)) #list of atmnt folder in the previous folder
+	patch_list_sd = sorted(os.listdir(sdPath)) #list of atmnt folder in the previous folder
+	i = 0
+	while(i<len(patch_list_usb)):
+		if patch_list_usb[i]!=patch_list_usb[i].replace('.',''):
+			del patch_list_usb[i]
+			i -= 1
+		i += 1
+	i = 0
+	while(i<len(patch_list_sd)):
+		if patch_list_sd[i]!=patch_list_sd[i].replace('.',''):
+			del patch_list_sd[i]
+			i -= 1
+		i += 1
 
 #____________________CONFIG____________________#
 
@@ -87,8 +126,8 @@ def read_config_file(fichier):
 				pass
 
 	numberOfPages = max(len(display_mode),(len(encoder)-1)//4+1,(len(switch)-1)//4+1)
-
-
+	
+	
 #____________________SERIAL____________________#
 
 ser = serial.Serial(port='/dev/ttyS0',baudrate=115200)
@@ -105,6 +144,16 @@ def serialLoop():
                             line = struct.unpack('B',line)
                             seri[i+1] = line[0]
 			return(seri)
+
+def ledOn():
+	ser.write(struct.pack('B',191))
+	ser.write(struct.pack('B',1))
+	ser.write(struct.pack('B',1))
+
+def ledOff():
+	ser.write(struct.pack('B',191))
+	ser.write(struct.pack('B',1))
+	ser.write(struct.pack('B',0))
 
 
 #____________________SCREEN____________________#
@@ -145,24 +194,14 @@ draw2 = ImageDraw.Draw(image2)
 top = 0
 bottom = height
 
-#HERE YOU CAN CHANGE THE FONTS
-font_folder = "/home/pi/font/"
-
-font = ImageFont.truetype(font_folder+"Laffayette_Comic_Pro.ttf",15)
-number_font = ImageFont.truetype(font_folder+"Laffayette_Comic_Pro.ttf", 32)
-small_number_font = ImageFont.truetype(font_folder+"Laffayette_Comic_Pro.ttf", 11)
-name_font = ImageFont.load_default()
-
-
-
 #____________________FLAGS____________________#
 
 display_table_flag = 1
 
-act = 0
-timedAct = 0
-actPage = 0
-actSwitch = -1
+act = 0		#vaut 1 si un encodeur est tourne
+timedAct = 0	#idem mais retourne a zero apres un certain temps, pour l'affichage de la valeur de l'encodeur
+actPage = 0		#vaut 1 quand le bouton page est enfonce
+actSwitch = -1	#vaut la valeur du dernier switch enfonce, retourne a -1 quand un switch est relache
 
 #____________________VALUES & CV____________________#
 
@@ -170,50 +209,18 @@ cv = [51]*5
 
 gate_1 = 0
 
-gate_2 = 1
-
-#____________________FORMS AND GRAPHICS____________________#
-
-#Positions for the graphical elements
-
-pot1_pos = [0, 0, 36, 36]
-pot2_pos = [29, 27, 65, 63]
-pot3_pos = [58, 0, 94, 36]
-pot4_pos = [87, 27, 123, 63]
-
-rec1_pos = [15, 38, 21, 43]
-rec2_pos = [44, 20, 50, 25]
-rec3_pos = [73, 38, 79, 43]
-rec4_pos = [102, 20, 108, 25]
-
-rec_fill = [0]*4
-
+gate_2 = 0
 
 #____________________UTILITIES____________________#
 
 changingPatch = 1
 
 menu_line = 1
-
-receive_address = '127.0.0.1', 9998
-send_address = '127.0.0.1', 9001
+menu_line_offset = 0
 
 activePage = 0
 
 numberOfPages = 1
 
-table = []
-
-#____________________SYSTEM____________________#
-
-def readPatchList():
-	global patch_list
-	#patch_list = sorted(os.listdir(folderPath)) #list of atmnt folder in the previous folder
-	#patch_list += os.listdir("/home/pi/puredata/exemples")
-	patch_list = sorted(os.listdir(folderPath))
-	i = 0
-	while(i<len(patch_list)):
-		if patch_list[i]!=patch_list[i].replace('.',''):
-			del patch_list[i]
-			i -= 1
-		i += 1
+fft = []
+waveform = []

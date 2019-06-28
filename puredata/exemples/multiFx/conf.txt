@@ -1,0 +1,19 @@
+
+=display_mode= fft;fft;fft
+
+=encoder=	trans.L,-12,12,1/2t;
+		trans.R,-12,12,1/2t;
+		mix.T.L,0,1, ;
+		mix.T.R,0,1, ;
+		
+		rate.P.L,0,2,Hz;
+		rate.P.R,0,2,Hz;
+		mix.P.L,0,1, ;
+		mix.P.R,0,1, ;
+		
+		gain.L,0,2, ;
+		gain.R,0,2, ;
+		vol.L,0,1, ;
+		vol.R,0,1, ;
+			
+=switch=

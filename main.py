@@ -9,95 +9,26 @@ import subprocess
 
 
 #______________________________ DISPLAY FONCTIONS ______________________________#
-
-def display_loading_screen():
-	""" 
-	displays the classic loading screen and the name of the patch you're opening.
-	this fonction is called by open_patch() and change_patch().
-	"""
-	cfg.draw.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-	cfg.draw.text((5, 10), "LOADING", font=cfg.font, fill=255)
-	cfg.draw.text((10, 20), ".", font=cfg.font, fill=255)
-	cfg.disp.image(cfg.image)
-	cfg.disp.display()
-	cfg.disp.clear()
-	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-	cfg.draw2.text((5, 10), "LOADING", font=cfg.font, fill=255)
-	cfg.draw2.text((10, 20), ".", font=cfg.font, fill=255)
-	cfg.disp2.image(cfg.image2)
-	cfg.disp2.display()
-	cfg.disp2.clear()
-	time.sleep(0.5)
-	cfg.draw.text((5, 10), "LOADING", font=cfg.font, fill=255)
-	cfg.draw.text((10, 20), ". .", font=cfg.font, fill=255)
-	cfg.disp.image(cfg.image)
-	cfg.disp.display()
-	cfg.disp.clear()
-	cfg.draw2.text((5, 10), "LOADING", font=cfg.font, fill=255)
-	cfg.draw2.text((10, 20), ". .", font=cfg.font, fill=255)
-	cfg.disp2.image(cfg.image2)
-	cfg.disp2.display()
-	cfg.disp2.clear()
-	time.sleep(0.5)
-	cfg.draw.text((5, 10), "LOADING", font=cfg.font, fill=255)
-	cfg.draw.text((10, 20), ". . .", font=cfg.font, fill=255)
-	cfg.disp.image(cfg.image)
-	cfg.disp.display()
-	cfg.disp.clear()
-	cfg.draw2.text((5, 10), "LOADING", font=cfg.font, fill=255)
-	cfg.draw2.text((10, 20), ". . .", font=cfg.font, fill=255)
-	cfg.disp2.image(cfg.image2)
-	cfg.disp2.display()
-	cfg.disp2.clear()
-	time.sleep(0.5)
-	cfg.draw.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-	cfg.disp.image(cfg.image)
-	cfg.disp.display()
-	cfg.disp.clear()
-	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-	cfg.disp2.image(cfg.image2)
-	cfg.disp2.display()
-	cfg.disp2.clear()
-
 	
 def display_inputs1():
-	""" 
-	Displays a set of four values on one page.
-	"""
-
-	pot_angle = [135]*4
-
-	for i in range(4):
-		try:
-			pot_angle[i] = min(max(135+int(cfg.encoder[i+(cfg.activePage)*4].value)*2.12,135),410)
-		except:
-			pass
-
+	"""displays the names and values of the encoders on the page on screen 1"""
+	
 	cfg.disp.clear()
 	cfg.draw.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-
-	cfg.draw.chord(cfg.pot1_pos, 0, 405, outline=255, fill=0)
-	cfg.draw.pieslice(cfg.pot1_pos, pot_angle[0], pot_angle[0], outline=1,fill=1)
-	cfg.draw.chord(cfg.pot2_pos, 0, 405, outline=255, fill=0)
-	cfg.draw.pieslice(cfg.pot2_pos, pot_angle[1], pot_angle[1], outline=255,fill=255)
-	cfg.draw.chord(cfg.pot3_pos, 0, 405, outline=255, fill=0)
-	cfg.draw.pieslice(cfg.pot3_pos, pot_angle[2], pot_angle[2], outline=255,fill=255)
-	cfg.draw.chord(cfg.pot4_pos, 0, 405, outline=255, fill=0)
-	cfg.draw.pieslice(cfg.pot4_pos, pot_angle[3], pot_angle[3], outline=255,fill=255)
-
-	cfg.draw.rectangle(cfg.rec1_pos, outline=255, fill=cfg.rec_fill[0])
-	cfg.draw.rectangle(cfg.rec2_pos, outline=255, fill=cfg.rec_fill[1])
-	cfg.draw.rectangle(cfg.rec3_pos, outline=255, fill=cfg.rec_fill[2])
-	cfg.draw.rectangle(cfg.rec4_pos, outline=255, fill=cfg.rec_fill[3])
-
-	cfg.draw.text((100,4),str(cfg.activePage+1)+'/'+str(cfg.numberOfPages), font=cfg.small_number_font, fill=1)
+	for j in range(4):	
+		try:
+			cfg.draw.text((0+64*(j%2),cfg.fontOffset+32*int(j/2)), cfg.encoder[j+4*cfg.activePage].name, font=cfg.font, fill=255)
+			cfg.draw.rectangle((0+65*(j%2),18+32*int(j/2),63+64*(j%2),31+32*int(j/2)),outline=1,fill=0)
+			cfg.draw.rectangle((1+65*(j%2),20+32*int(j/2),cfg.encoder[j+4*cfg.activePage].value*63/127+65*(j%2),29+32*int(j/2)),outline=1,fill=1)
+		except:
+			pass
+	
 	cfg.disp.image(cfg.image)
 	cfg.disp.display()
-
 	
 def display_input2():
 	""" 
-	Displays the active value and send osc messages of encoder
+	Displays the active value and send osc messages of encoder on the screen 2
 	"""
 	try:
 		#######
@@ -107,15 +38,15 @@ def display_input2():
 		cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
 
 		cfg.draw2.line([4,22,124,22], fill=255)
-		cfg.draw2.text((3,6), cfg.encoder[cfg.last_pot+(cfg.activePage)*4].name, font=cfg.font, fill=255)
+		cfg.draw2.text((3,5+cfg.fontOffset), cfg.encoder[cfg.last_pot+(cfg.activePage)*4].name, font=cfg.font, fill=255)
 		adaptedValue = (cfg.encoder[cfg.last_pot+(cfg.activePage)*4].value/127.0)*(cfg.encoder[cfg.last_pot+(cfg.activePage)*4].max-cfg.encoder[cfg.last_pot+(cfg.activePage)*4].min)+cfg.encoder[cfg.last_pot+(cfg.activePage)*4].min
 		if abs(adaptedValue) < 100:
-			cfg.draw2.text((40,35), str(int(adaptedValue)), font=cfg.number_font, fill=255)
+			cfg.draw2.text((40,33+cfg.fontOffset), str(float(int(adaptedValue*10))/10), font=cfg.number_font, fill=255)
 		elif abs(adaptedValue) < 1000:
-			cfg.draw2.text((30,35), str(int(adaptedValue)), font=cfg.number_font, fill=255)
+			cfg.draw2.text((30,33+cfg.fontOffset), str(int(adaptedValue)), font=cfg.number_font, fill=255)
 		else:
-			cfg.draw2.text((20,35), str(int(adaptedValue)), font=cfg.number_font, fill=255)
-		cfg.draw2.text((104,50), str(cfg.encoder[cfg.last_pot+(cfg.activePage)*4].unit), font=cfg.font, fill=255)
+			cfg.draw2.text((20,33+cfg.fontOffset), str(int(adaptedValue)), font=cfg.number_font, fill=255)
+		cfg.draw2.text((104,46+cfg.fontOffset), str(cfg.encoder[cfg.last_pot+(cfg.activePage)*4].unit), font=cfg.font, fill=255)
 		cfg.disp2.image(cfg.image2)
 		cfg.disp2.display()
 
@@ -129,34 +60,51 @@ def display_input2():
 
 	
 def display_page():
+	"""displays on the screen 1 the page you're switching to"""
+	
 	cfg.disp.clear()
 	cfg.draw.rectangle((0,0,cfg.width,cfg.height),outline=0,fill=0)
 	cfg.draw.line([4,22,124,22], fill=255)
-	cfg.draw.text((3,6),'page',font=cfg.font,fill=1)
-	cfg.draw.text((30,35),str(cfg.activePage+1)+'/'+str(cfg.numberOfPages),font=cfg.number_font,fill=1)
+	cfg.draw.text((3,2+cfg.fontOffset),'page',font=cfg.font,fill=1)
+	cfg.draw.text((30,35+cfg.fontOffset),str(cfg.activePage+1)+'/'+str(cfg.numberOfPages),font=cfg.number_font,fill=1)
 	cfg.disp.image(cfg.image)
 	cfg.disp.display()
 
 	
-def display_table():
+def display_fft():
 	""" 
-	display the table on the screen
+	displays the fft visualization on screen 2
 	"""
 	cfg.disp2.clear()
 	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
 	for i in range(128):
 		try:
-			cfg.draw2.point((i, cfg.table[i]*32+32), fill=1)
+			cfg.draw2.line((i, (cfg.fft[i]-1)*-64,i,64), fill=1)
 		except:
 			pass
 	cfg.disp2.image(cfg.image2)
 	cfg.disp2.display()
 
+def display_waveform():
+	""" 
+	display the waveform on screen 2
+	"""
+	cfg.disp2.clear()
+	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
+	for i in range(128):
+		try:
+			cfg.draw2.line((i, cfg.waveform[i]*32+32,i+1,cfg.waveform[i+1]*32+32), fill=1)
+		except:
+			pass
+	cfg.disp2.image(cfg.image2)
+	cfg.disp2.display()
 	
 def display_cpu():
+	"""display cpu on screen 2"""
+	
 	cpu = psutil.cpu_percent()
 	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-	cfg.draw2.text((10,23), "CPU : "+str(int(cpu)), font=cfg.font, fill=255)
+	cfg.draw2.text((10,21+cfg.fontOffset), "CPU : "+str(int(cpu)), font=cfg.font, fill=255)
 	cfg.draw2.rectangle((100,0,112,63),outline=1,fill=0)
 	cfg.draw2.rectangle((102,63-cpu*0.63,110,63),outline=1,fill=1)
 	cfg.disp2.image(cfg.image2)
@@ -166,7 +114,7 @@ def display_cpu():
 
 def display_cv_in():
 	""" 
-	visualization of incoming CV. 
+	visualization of incoming CV on screen 2
 	"""
 	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
 
@@ -197,38 +145,95 @@ def display_cv_in():
 	
 	
 def display_activeSwitch(switch):
-	#display the value and name of a switch when it is pressed
+	"""display the value and name of a switch when it is pressed (screen 2)"""
+	
 	cfg.draw2.rectangle((0,0,cfg.width,cfg.height),outline=0, fill=0)
 	cfg.draw2.line([4,22,124,22], fill=255)
-	cfg.draw2.text((3,6),cfg.switch[switch].name,font=cfg.font,fill=1)
-	cfg.draw2.text((10,35),cfg.switch[switch].stateNames[cfg.switch[switch].state],font=cfg.number_font,fill=1)
+	cfg.draw2.text((3,4+cfg.fontOffset),cfg.switch[switch+cfg.activePage].name,font=cfg.font,fill=1)
+	cfg.draw2.text((10,34+cfg.fontOffset),cfg.switch[switch+cfg.activePage].stateNames[cfg.switch[switch.cfg.activePage].state],font=cfg.number_font,fill=1)
 	cfg.disp2.image(cfg.image2)
 	cfg.disp2.display()
 	cfg.disp2.clear()
 
 def display_allSwitchs():
-	#display the values of the 4 switch on the page
+	"""display the values of the 4 switch on the page (screen 2)"""
+	
 	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-	cfg.draw2.text((0,15), str(cfg.switch[0+4*cfg.activePage].stateNames[cfg.switch[0+4*cfg.activePage].state]), font=cfg.font, fill=255)
-	cfg.draw2.text((15,45), str(cfg.switch[1+4*cfg.activePage].stateNames[cfg.switch[1+4*cfg.activePage].state]), font=cfg.font, fill=255)
-	cfg.draw2.text((64,15), str(cfg.switch[2+4*cfg.activePage].stateNames[cfg.switch[2+4*cfg.activePage].state]), font=cfg.font, fill=255)
-	cfg.draw2.text((79,45), str(cfg.switch[3+4*cfg.activePage].stateNames[cfg.switch[3+4*cfg.activePage].state]), font=cfg.font, fill=255)
+	cfg.draw2.text((0,13+cfg.fontOffset), str(cfg.switch[0+4*cfg.activePage].stateNames[cfg.switch[0+4*cfg.activePage].state]), font=cfg.font, fill=255)
+	cfg.draw2.text((64,13+cfg.fontOffset), str(cfg.switch[1+4*cfg.activePage].stateNames[cfg.switch[1+4*cfg.activePage].state]), font=cfg.font, fill=255)
+	cfg.draw2.text((0,43+cfg.fontOffset), str(cfg.switch[2+4*cfg.activePage].stateNames[cfg.switch[2+4*cfg.activePage].state]), font=cfg.font, fill=255)
+	cfg.draw2.text((64,43+cfg.fontOffset), str(cfg.switch[3+4*cfg.activePage].stateNames[cfg.switch[3+4*cfg.activePage].state]), font=cfg.font, fill=255)
 	cfg.disp2.image(cfg.image2)
 	cfg.disp2.display()
 	cfg.disp2.clear()
 	
+	
+def display_patchList1():
+	"""displays the patchs list on screen 1"""
+	
+	cfg.draw.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
+	cfg.draw.rectangle((0,7+int(cfg.menu_line)*16,6,10+int(cfg.menu_line)*16), outline=0, fill=255)
+	cfg.draw.rectangle((121,7+int(cfg.menu_line)*16,127,10+int(cfg.menu_line)*16), outline=0, fill=1)
+	for j in range(4):
+		try:
+			if cfg.device == 0:
+				cfg.draw.text((12, cfg.fontOffset-2+16*j), cfg.patch_list_sd[j+int(cfg.menu_line_offset)], font=cfg.font, fill=255)
+			else:
+				cfg.draw.text((12, cfg.fontOffset-2+16*j), cfg.patch_list_usb[j+int(cfg.menu_line_offset)], font=cfg.font, fill=255)
+		except:
+			pass
+	cfg.disp.image(cfg.image)
+	cfg.disp.display()
+	cfg.disp.clear
+	
+
+def display_patchList2():
+	"""displays what's left of the patchs list on screen 2"""
+	
+	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
+	cfg.draw2.rectangle((0,7+(int(cfg.menu_line)*16)-64,6,10+(int(cfg.menu_line)*16)-64), outline=0, fill=255)
+	cfg.draw2.rectangle((121,7+(int(cfg.menu_line)*16)-64,127,10+(int(cfg.menu_line)*16)-64), outline=0, fill=1)
+	for j in range(4):
+		try:
+			if cfg.device == 0:
+				cfg.draw2.text((12, cfg.fontOffset-2+16*j), cfg.patch_list_sd[j+4+int(cfg.menu_line_offset)], font=cfg.font, fill=255)
+			else:
+				cfg.draw2.text((12, cfg.fontOffset-2+16*j), cfg.patch_list_usb[j+4+int(cfg.menu_line_offset)], font=cfg.font, fill=255)
+		except:
+			pass
+	cfg.disp2.image(cfg.image2)
+	cfg.disp2.display()
+	cfg.disp2.clear()
+
+		
 #______________________________ OSC FONCTIONS ______________________________#
 
-def change_table(addr, tags, stuff, source):
-	""" 
-	changes the values of the list containing the array/waveform 
-	"""
-	cfg.table = stuff
-
-app = ("localhost", 9001)
+app = (cfg.send_address)
 client = OSC.OSCClient()
 client.connect(cfg.send_address)
 client.sendto(OSC.OSCMessage("/echo", 1), app)
+
+def change_waveform(addr, tags, stuff, source):
+	""" 
+	changes the values of the list containing the array/waveform 
+	"""
+	cfg.waveform = stuff
+
+
+def change_fft(addr, tags, stuff, source):
+	""" 
+	changes the values of the list containing the array/waveform 
+	"""
+	cfg.fft = stuff
+	
+def change_encoder_value(addr, tags, stuff, source):
+	for i in range(len(cfg.encoder)):
+		if '/'+cfg.encoder[i].name == addr :
+			cfg.encoder[i].value = (stuff[0]-cfg.encoder[i].min)/(cfg.encoder[i].max-cfg.encoder[i].min)*127
+			client.sendto(OSC.OSCMessage("/"+cfg.encoder[i].name, stuff[0]), app)
+def handlingOsc():
+	for i in range(len(cfg.encoder)):
+		server.addMsgHandler("/"+cfg.encoder[i].name, change_encoder_value)
 
 def oscSendSwitch(switch,state):
 	try:
@@ -237,8 +242,21 @@ def oscSendSwitch(switch,state):
 	except:
 		pass
 
-################
-#
+
+#______________________________ OTHER FONCTIONS ______________________________#
+
+def moveCursor(val):
+	if cfg.menu_line == 0 and val < 0:
+		cfg.menu_line_offset = max((cfg.menu_line_offset + val),0)
+	elif cfg.menu_line == 7 and val > 0:
+		if cfg.device == 0:
+			cfg.menu_line_offset = max(min((cfg.menu_line_offset + val),len(cfg.patch_list_sd)-8),0)
+		else:
+			cfg.menu_line_offset = max(min((cfg.menu_line_offset + val),len(cfg.patch_list_usb)-8),0)
+	else:
+		cfg.menu_line = min(max((cfg.menu_line + val),0),7)
+		
+	
 def display_patchScreen1():
 	if cfg.actPage == 1:
 		display_page()
@@ -266,8 +284,13 @@ def display_patchScreen2():
 		except:
 			pass
 		try:
-			if cfg.display_mode[cfg.activePage]=='table':
-				display_table()
+			if cfg.display_mode[cfg.activePage]=='waveform':
+				display_waveform()
+		except:
+			pass
+		try:
+			if cfg.display_mode[cfg.activePage]=='fft':
+				display_fft()
 		except:
 			pass
 		try:
@@ -277,92 +300,78 @@ def display_patchScreen2():
 			pass
 
 
-###############
-#
-def display_patchList1():
-	cfg.draw.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-	cfg.draw.rectangle((0,4+int(cfg.menu_line)*16,6,8+int(cfg.menu_line)*16), outline=0, fill=255)
-	cfg.draw.rectangle((121,4+int(cfg.menu_line)*16,127,8+int(cfg.menu_line)*16), outline=0, fill=1)
-	for j in range(4):
-		try:
-			cfg.draw.text((12, 2+16*j), cfg.patch_list[j], font=cfg.font, fill=255)
-		except:
-			pass
-	cfg.disp.image(cfg.image)
-	cfg.disp.display()
-	cfg.disp.clear
-	
-
-def display_patchList2():
-	cfg.draw2.rectangle((0,0,cfg.width,cfg.height), outline=0, fill=0)
-	cfg.draw2.rectangle((0,4+(int(cfg.menu_line)*16)-64,6,8+(int(cfg.menu_line)*16)-64), outline=0, fill=255)
-	cfg.draw2.rectangle((121,4+(int(cfg.menu_line)*16)-64,127,8+(int(cfg.menu_line)*16)-64), outline=0, fill=1)
-	for j in range(4):
-		try:
-			cfg.draw2.text((12, 2+16*j), cfg.patch_list[j+4], font=cfg.font, fill=255)
-		except:
-			pass
-	cfg.disp2.image(cfg.image2)
-	cfg.disp2.display()
-	cfg.disp2.clear()
-
-
 ##################
-#
-# initialisation du seriel
-#
+#                #
+#     serial     #
+#                #
 ##################
 
 def serial():
 	while True:
 		serialMsg = cfg.serialLoop()
 		if serialMsg[0] == 191:
-			if serialMsg[1] < 9:
-		#switchs
+			if serialMsg[1] < 9:		#switchs
 				if serialMsg[2]==1:
-					if serialMsg[1]>4:
+
+					if serialMsg[1]>4:	#switchs des encodeurs
 						try:
-							cfg.rec_fill[serialMsg[1]-5] = (cfg.rec_fill[serialMsg[1]-5]+1)%2
 							cfg.actSwitch = serialMsg[1]-5
-							cfg.switch[serialMsg[1]-5].state = (cfg.switch[serialMsg[1]-5].state + 1)%cfg.switch[serialMsg[1]-5].numStates
-							oscSendSwitch(serialMsg[1]-5,cfg.switch[serialMsg[1]-5].state)
+							cfg.switch[serialMsg[1]-5+cfg.activePage*4].state = (cfg.switch[serialMsg[1]-5+cfg.activePage*4].state + 1)%cfg.switch[serialMsg[1]-5+cfg.activePage*4].numStates
+							oscSendSwitch(serialMsg[1]-5+cfg.activePage*4,cfg.switch[serialMsg[1]-5+cfg.activePage*4].state)
 						except:
 							pass
-					elif serialMsg[1]==1:
+
+					elif serialMsg[1]==1: #bouton 'down'
 						if cfg.changingPatch == 0:
-							cfg.activePage = (cfg.activePage + 1)%cfg.numberOfPages
+							cfg.activePage = (cfg.activePage - 1)%cfg.numberOfPages
 							cfg.actPage = 1
-					elif serialMsg[1]==2:
+						else:
+							moveCursor(1)
+
+					elif serialMsg[1]==2:	#bouton 'sortie'
 						if cfg.changingPatch == 0:
+							cfg.ledOn()
 							os.system("pkill pd &")
 							cfg.activePage = 0
 							"""fermer le serveur osc ?"""
+
 							cfg.readPatchList()
 							cfg.changingPatch = 1
-						elif cfg.changingPatch == 1:
+							cfg.ledOff()
+							
+					elif serialMsg[1]==3:	#bouton 'selection'
+						if cfg.changingPatch == 1:
 							try:
-								os.system('pd -path /usr/lib/pd/extra/osc -path /home/pi/puredata -nogui -alsamidi -mididev 1 '+cfg.folderPath+cfg.patch_list[int(cfg.menu_line)]+'/main.pd &')
+								cfg.ledOn()
+								if cfg.device==1:
+									cfg.read_config_file(cfg.usbPath+cfg.patch_list_usb[int(cfg.menu_line)+int(cfg.menu_line_offset)]+"/conf.txt")
+									handlingOsc()
+									os.system('pd -path /usr/lib/pd/extra/osc -path '+cfg.usbPath+'../ -nogui -alsamidi -mididev 1 '+cfg.usbPath+cfg.patch_list_usb[int(cfg.menu_line)+int(cfg.menu_line_offset)]+'/main.pd &')
+								else:
+									cfg.read_config_file(cfg.sdPath+cfg.patch_list_sd[int(cfg.menu_line)+int(cfg.menu_line_offset)]+"/conf.txt")
+									handlingOsc()
+									os.system('pd -path /usr/lib/pd/extra/osc -path '+cfg.sdPath+'../ -nogui -alsamidi -mididev 1 '+cfg.sdPath+cfg.patch_list_sd[int(cfg.menu_line)+int(cfg.menu_line_offset)]+'/main.pd &')
 								time.sleep(2)
 								os.system("aconnect 20:0 128:0")
-								cfg.read_config_file(cfg.folderPath+cfg.patch_list[int(cfg.menu_line)]+"/conf.txt")
-								cfg.changingPatch = -1
-								display_loading_screen()
 								cfg.changingPatch = 0
+								cfg.ledOff()
 							except:
 								cfg.readPatchList()
+								cfg.ledOff()
+
+					elif serialMsg[1]==4: #bouton 'up'
+						if cfg.changingPatch == 0:
+							cfg.activePage = (cfg.activePage + 1)%cfg.numberOfPages
+							cfg.actPage = 1
+						else:
+							moveCursor(-1)
 				else:
-					if serialMsg[1]==1:
-						cfg.actPage=0
+					cfg.actPage=0
 					cfg.actSwitch=-1
 
-			elif serialMsg[1] < 15:
-		#CVs
-				cfg.cv[serialMsg[1]-10] = serialMsg[2]
-
-			elif serialMsg[1] < 24:
-		#Encoders going up
+			elif serialMsg[1] < 24:		#Encoders going up
 				if cfg.changingPatch == 1:
-					cfg.menu_line = (cfg.menu_line + serialMsg[2]*0.1)%8
+					moveCursor(serialMsg[2]*0.1)
 				elif cfg.changingPatch == 0:
 					cfg.last_pot=serialMsg[1]-20
 					try:
@@ -372,10 +381,9 @@ def serial():
 					cfg.act = 1
 					cfg.timedAct = 1
 
-			elif serialMsg[1] < 28:
-		#Encoders going udown
+			elif serialMsg[1] < 28:		#Encoders going down
 				if cfg.changingPatch == 1:
-					cfg.menu_line = (cfg.menu_line - serialMsg[2]*0.1)%8
+					moveCursor(-serialMsg[2]*0.1)
 				elif cfg.changingPatch == 0:
 					cfg.last_pot=serialMsg[1]-24
 					try:
@@ -385,13 +393,28 @@ def serial():
 					cfg.act = 1
 					cfg.timedAct = 1
 
-			else:
-		#Gates
+			elif serialMsg[1] < 50:		#Gates
 				if serialMsg[1] == 30:
 					cfg.gate_1 = serialMsg[2]
+					try:
+						client.sendto(OSC.OSCMessage("/gate"+str(1), serialMsg[2]), app)
+					except:
+						pass
 				else:
 					cfg.gate_2 = serialMsg[2]
-		else:
+					try:
+						client.sendto(OSC.OSCMessage("/gate"+str(2), serialMsg[2]), app)
+					except:
+						pass
+
+			else:		#CVs
+				cfg.cv[serialMsg[1]-50] = serialMsg[2]
+				try:
+					client.sendto(OSC.OSCMessage("/cv"+str(serialMsg[1]-49), serialMsg[2]), app)
+				except:
+					pass
+
+		else:	#midi-jack
 			try:
 				client.sendto(OSC.OSCMessage("/midi", serialMsg), app)
 			except:
@@ -400,11 +423,11 @@ def serial():
 serialThread = threading.Thread(target=serial)
 serialThread.start()
 
-###################
-#
-# timer thread
-#
-###################
+##################
+#                #
+#  timer thread  #
+#                #
+##################
 
 def timer():
 	while  True:
@@ -416,28 +439,31 @@ timerThread = threading.Thread(target=timer)
 timerThread.start()
 
 
-###################
-#
-# initialisation de l'OSC
-#
-###################
+##################
+#                #
+#      OSC       #
+#                #
+##################
 
 server = OSC.OSCServer(cfg.receive_address)
 server.addDefaultHandlers
 
-server.addMsgHandler("/table",  change_table)
+server.addMsgHandler("/fft",  change_fft)
+server.addMsgHandler("/waveform",  change_waveform)
 
 oscServer = threading.Thread(target=server.serve_forever)
 oscServer.start()
 
 
-###################
-#
-# lancement de l'affichage
-#
-###################
+####################
+#                  #
+# starting display #
+#                  #
+####################
 
 cfg.readPatchList()
+
+cfg.ledOff()
 
 while True:
 	while(cfg.changingPatch==1): #affichage de la liste des patchs

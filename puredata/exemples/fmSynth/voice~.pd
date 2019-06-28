@@ -8,7 +8,7 @@
 #X obj 584 231 cos~;
 #X obj 558 176 phasor~;
 #X obj 596 205 +~;
-#X obj 713 139 osc~;
+#X obj 716 147 osc~;
 #X obj 339 31 inlet;
 #X obj 438 35 inlet;
 #X obj 630 29 inlet;
@@ -33,10 +33,11 @@
 #X obj 47 174 t b f;
 #X obj 333 417 *~ 0;
 #X obj 216 213 sel 0;
-#X obj 232 234 / 255;
-#X obj 235 255 + 0.5;
+#X obj 240 291 + 0.5;
 #X obj 454 315 *~ 0;
 #X obj 18 66 oscBendin 1;
+#X obj 232 234 / 127;
+#X obj 229 261 * 0.75;
 #X connect 1 0 15 0;
 #X connect 2 0 25 0;
 #X connect 3 0 2 0;
@@ -64,7 +65,7 @@
 #X connect 19 0 22 0;
 #X connect 20 0 8 1;
 #X connect 21 0 22 1;
-#X connect 22 0 36 0;
+#X connect 22 0 35 0;
 #X connect 23 0 9 0;
 #X connect 24 0 23 0;
 #X connect 24 1 23 1;
@@ -77,9 +78,10 @@
 #X connect 31 0 30 0;
 #X connect 31 1 30 1;
 #X connect 32 0 0 0;
-#X connect 33 1 34 0;
-#X connect 34 0 35 0;
-#X connect 35 0 32 1;
-#X connect 35 0 36 1;
-#X connect 36 0 5 1;
-#X connect 37 0 27 0;
+#X connect 33 1 37 0;
+#X connect 34 0 32 1;
+#X connect 34 0 35 1;
+#X connect 35 0 5 1;
+#X connect 36 0 27 0;
+#X connect 37 0 38 0;
+#X connect 38 0 34 0;

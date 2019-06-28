@@ -1,0 +1,9 @@
+
+=display_mode=	switchStates;waveform;cpu
+
+=encoder=
+
+=switch=	switch1,on,off;
+		switch2,on,off;
+		switch3,on,moitie,off;
+		switch4,on,off
